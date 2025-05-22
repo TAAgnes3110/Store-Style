@@ -1,0 +1,179 @@
+# MÔ TẢ GIAO DIỆN ỨNG DỤNG "AI STYLIST & E-COMMERCE" (Dành cho Flutter)
+
+## 1. Màn hình Trang Chủ (Home Screen)
+- AppBar:
+  - Logo ứng dụng bên trái.
+  - Các icon Thống báo (🔔), Giỏ hàng (🛒), Tài khoản (👤) bên phải.
+- Ô tìm kiếm:
+  - TextField với placeholder "Tìm kiếm sản phẩm..."
+  - Icon kính lúp (🔍) phía trước.
+- Danh mục sản phẩm:
+  - Horizontal list các icon danh mục: "Áo", "Quần", "Váy", "Giày", "Phụ kiện".
+  - Mỗi mục có hình dáng tròn/ngạnh bo góc, màu nền pastel nhạt.
+- Banner khuyến mãi:
+  - Full-width, có hiệu ứng lướt ngang để hiển thị các chương trình giảm giá, flash sale.
+  - Nội dung: Ví dụ "60% OFF Mùa Hè", "Giảm thêm đến 300K".
+- Sản phẩm nổi bật:
+  - Tựa đề "Sản Phẩm Phổ Biến" + Horizontal list các sản phẩm gợi ý (ưu tiên click đi tới trang chi tiết).
+- Nút AI Gợi ý:
+  - Floating Action Button (nằm ở góc dưới phải).
+  - Icon: Tinh thể phát sáng hoặc cành hoa thiết kế thời trang.
+  - Label: "AI Gợi Ý".
+
+## 2. Màn hình AI Gợi Ý (AI Style Screen)
+- Ô nhập mô tả:
+  - TextField với placeholder "Mô tả outfit bạn muốn... (Ví dụ: Sơ mi trắng + váy pastel + giày cao gót)".
+  - Icon mic (🎤) nếu có tính năng nhập bằng âm thanh hoặc ghi chú đầu vào.
+- Nút lựa chọn gợi ý:
+  - "Gợi ý từ Xu Hướng" (hiển thị sản phẩm dựa trên các xu hướng theo mùa).
+  - "Tìm kiếm Nâng cao" (tùy chọn: lọc theo giá, chất liệu, màu sắc).
+- Kết quả gợi ý:
+  - ListView dọc hoặc lưới theo từng kết hợp style.
+  - Mỗi ô gợi ý bao gồm:
+    - Ảnh outfit (generative AI hoặc nhóm sản phẩm ghép ghép phanan).
+    - Tên kiểu phối đồ ("Casual buổi tối", "Đơn giản mùa hè").
+    - Tổng giá các item trong outfit.
+    - Nút "Mua lần lượt từng món".
+- Ảnh minh họa:
+  - Hiển thị hình ảnh 3D/avatar mặc với outfit đã gợi ý.
+  - Có thể dùng AI generated image từ mô tả người dùng nhập.
+
+## 3. Màn hình Đăng Nhập (Login Screen)
+- Tiêu đề chào mừng:
+  - "Chào mừng bạn quay lại!"
+- Fields:
+  - Email hoặc Số điện thoại (có placeholder và icon).
+  - Mật khẩu (gồm "Hiện" và "Ẩn" password khi click icon).
+- Chức năng phụ:
+  - Nút "Quên mật khẩu" màu xanh nhạt điều hướng tới màn hình khôi phục mật khẩu.
+  - Đăng nhập qua mạng xã hội: Google, Facebook, Zalo với nút.
+- Điều hướng:
+  - Nếu chưa có tài khoản: Nút gradient tùy chọn "Đăng ký ngay".
+  - Khi đăng nhập xong → chuyển tới Trang chủ.
+
+## 4. Màn hình Đăng ký (Registration Screen)
+- Fields chính:
+  - Họ tên người dùng.
+  - Địa chỉ email.
+  - Số điện thoại.
+  - Mật khẩu (gồm "Hiện"/"Ẩn").
+  - Xác nhận mật khẩu.
+- Thông tin bổ sung:
+  - Mã giới thiệu (tuỳ chọn, ví dụ: "MãNgườiGớiiTQ123").
+  - Tích chọn chính sách bảo mật: "Tôi đồng ý với điều khoản sử dụng và quyền riêng tư".
+- Nút hành động:
+  - "Đăng ký" (gradient màu phấn hoặc cam - hồng).
+- Điểu hướng:
+  - Nếu đã có tài khoản → nút "Đăng nhập".
+  - Đăng ký thành công → điều hướng tới Email xác thực hoặc trực tiếp Home.
+
+## 5. Màn hình Giỏ Hàng (Cart Screen)
+- Danh sách sản phẩm đã chọn:
+  - Mỗi sản phẩm hiển thị ảnh thu nhỏ (image thumbnail), tên, giá.
+  - Checkbox để chọn hoặc bỏ chọn mặt hàng khi xóa hoặc thanh toán.
+- Chỉnh sửa số lượng:
+  - Hiển thị "+" và "-" để tăng/giảm số lượng sản phẩm cần mua.
+- Tổng chi phí:
+  - Subtotal: tổng giá toàn bộ sản phẩm khớp theo số lượng chọn.
+  - Phí vận chuyển: thông tin "Miễn phí vận chuyển" hoặc "Liên hệ".
+  - Khuyến mãi: ô nhập mã coupon, nút "Áp dụng".
+- Nút hành động:
+  - Nút màu nổi bật "Tiến Hành Thanh Toán".
+  - Thêm nút "Chuyển vào mục Yêu Thích".
+
+## 6. Màn hình Thanh Toán (Checkout Screen)
+- Thông tin người nhận hàng:
+  - Họ tên, SĐT, Địa chỉ. Nút thêm mới nếu chưa có thông tin.
+  - Ô ghi chú bổ sung (ví dụ: "Giao trước 18h").
+- Phương thức thanh toán:
+  - "Tiền mặt khi nhận hàng" (COD).
+  - "Thẻ ngân hàng hoặc ví điện tử" (Ví dụ: Momo, ZaloPay).
+  - Tùy chọn thanh toán trước bằng QR hoặc tải ảnh hoá đơn.
+- Tổng đơn hàng:
+  - Đóng gói đầy đủ chi tiết: giá từng sản phẩm, tổng giá sau coupon.
+- Nút hành động:
+  - Thanh toán (gradient cam → hồng) với icon giỏ hàng.
+- Thông báo:
+  - "Mua ngay: nhận ưu đãi SIÊU HOT lên tới 20%".
+
+## 7. Màn hình Mục Yêu Thích (Wishlist Screen)
+- Danh sách các sản phẩm người dùng đã thêm vào yêu thích:
+  - Mỗi sản phẩm hiển thị tên, giá, ảnh minh họa.
+  - Bao gồm nút "Mua ngay" hoặc "Xoá khỏi mục yêu thích".
+- Tùy chọn bộ lọc sản phẩm:
+  - Lọc theo danh mục: Ví dụ "Áo", "Váy", "Mũ và phụ kiện".
+  - Lọc theo giá: "Dưới 500.000đ", "Trên 1.000.000đ".
+- Tiêu đề gợi ý & thông báo:
+  - Dòng thông báo nếu người dùng chưa chọn bất kỳ sản phẩm nào.
+  - Gợi ý về những xếp hạng ưu tiên.
+
+## 8. Màn hình Trang Cá Nhân (Profile Screen)
+- Avatar người dùng:
+  - Nút thay đổi avatar, có thể tải từ máy.
+- Thông tin tài khoản:
+  - Họ tên, email, SĐT.
+- Các tùy chọn:
+  - Đơn hàng của bạn (Điều hướng tới màn hình trạng thái đơn hàng).
+  - Mục yêu thích (Điều hướng tới Wishlist).
+  - Thông báo hệ thống (Nhận/gửi).
+  - Cài đặt (Chế độ sáng/tối, ngôn ngữ, vùng).
+  - Đăng xuất.
+- Giao diện đẹp gồm ảnh nền gradient pastel hoặc hình nền thời trang nổi bật.
+
+## 9. Màn hình Quản Lý Trạng Thái Đơn Hàng (Order Status Screen)
+- Timeline trạng thái:
+  - "Đã xác nhận" → "Đang vận chuyển" → "Đã hoàn thành".
+- Thông tin sản phẩm:
+  - Ảnh + tên + giá của từng sản phẩm.
+- Thao tác:
+  - Đánh giá sản phẩm (5 sao + ô feedback).
+  - Hủy đơn hàng (nếu chưa giao).
+- Hỗ trợ:
+  - Nút "Liên hệ CSKH".
+
+## 10. Màn hình Thanh Toán Bằng Ảnh (Image-Based Payment Screen)
+- Mô tả:
+  - Nếu chọn "Thẻ ngân hàng", hiển thị hướng dẫn chụp hoặc tải hình ảnh giao dịch.
+- Chức năng:
+  - Máy ảnh tích hợp, upload hình ảnh hoá đơn từ máy.
+  - Thông báo tiến độ tải ảnh lên & trạng thái xử lý.
+- Nút hành động "Xác nhận":
+  - Upload ảnh + chuyển tới màn hình thanh toán thành công.
+
+## 11. Nguyên tắc Thiết kế Giao diện (UI/UX Design Principles)
+- Color palette:
+  - Chính: Mạng màu pastel dịu mắt (lavender, mint).
+  - Gradient: Kết hợp màu cam → hồng, xanh đen → vàng metallic.
+  - Phụ: Sử dụng màu trắng/đen làm nền tiêu chuẩn.
+- Font chữ:
+  - Sans-serif (ví dụ: Poppins, Inter).
+  - Độ đậm và cỡ chữ rõ ràng: tiêu đề (18–20px), nội dung (14–16px).
+- Layout:
+  - Tối giản, ưu tiên khoảng trắng, bóng đổ sản phẩm trong card layout.
+- Responsive:
+  - Hỗ trợ cả điện thoại và máy tính bảng.
+  - Dark/Light mode với nút điều hướng.
+- Animation:
+  - Slide animation khi chuyển tile sản phẩm, giỏ hàng.
+  - Hiệu ứng loading khi chờ phản hồi từ API.
+
+## 12. Bộ Cấu trúc Code (Đề Xuất)
+- Folder structure:
+  - /lib: chứa các file mở.
+      - main.dart (entry point).
+      - screens: màn hình chính (home_sreen.dart, login_screen.dart,...).
+      - widgets: các thành phần reusable (product_card.dart, cart_row_item.dart,...).
+      - services: kết nối API và thư viện AI.
+      - models: định nghĩa Class sản phẩm, người dùng, đơn hàng.
+
+- Firebase integration:
+  - Authentication: quản lý người dùng (login, signup).
+  - Cloud Firestore: lưu trữ dữ liệu sản phẩm, giỏ hàng, đơn hàng.
+
+- AI Integration:
+  - Mô hình NLP: dùng PhoBERT để trích xuất thông tin từ câu mô tả sản phẩm.
+  - Gợi ý sản phẩm theo ngữ cảnh người dùng (từ gợi ý).
+  - API backend cho cả mô hình tạo ảnh AI.
+
+## Tiếp theo:
+Bạn có thể lưu toàn bộ văn bản này vào file TXT và điều chỉnh tùy theo nhu cầu thiết kế chạy giao diện Flutter của bạn. Nếu bạn cần xuất file này thành file TXT để tôi tạo ra hoặc tiếp tục hỗ trợ bạn trong viết code, hoặc thiết kế chi tiết từng màn hình, cứ thông báo nhé!
