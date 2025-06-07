@@ -174,19 +174,22 @@ class _SigninScreenState extends State<SigninScreen> {
     });
     try {
       final AuthController authController = Get.find<AuthController>();
-      // Gọi hàm login thực tế, ví dụ:
-      // bool result = await authController.loginApi(_emailController.text, _passwordController.text);
-      // if (result) {
-      //   Get.off(() => const MainScreen());
-      // } else {
-      //   setState(() => _errorMessage = "Login failed. Please check your credentials.");
-      // }
-      // Demo: luôn thành công
-      await Future.delayed(const Duration(seconds: 1));
-      Get.off(() => const MainScreen());
+      final result = await authController.loginApi(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (result['success'] == true) {
+        authController.login(); // Cập nhật trạng thái đăng nhập
+        Get.off(() => const MainScreen());
+      } else {
+        setState(() {
+          _errorMessage = result['message'] ?? 'Login failed. Please check your credentials.';
+        });
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = "An error occurred: $e";
+        _errorMessage = 'An error occurred: $e';
       });
     } finally {
       setState(() {

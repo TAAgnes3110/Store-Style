@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/auth_controller.dart';
 import 'package:flutter_application_1/utils/app_textstyles.dart';
 import 'package:flutter_application_1/view/signin_screen.dart';
 import 'package:flutter_application_1/view/widgets/custom_textfield.dart';
@@ -21,7 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
 
-  String? _sentOtp;
+  String? _errorMessage;
   bool _isSendingOtp = false;
   int _secondsRemaining = 0;
   Timer? _timer;
@@ -44,22 +45,28 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _sendOtp() async {
-    if (_emailController.text.isEmpty || !GetUtils.isEmail(_emailController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email before requesting OTP.')),
-      );
-      return;
-    }
+  if (_emailController.text.isEmpty || !GetUtils.isEmail(_emailController.text)) {
     setState(() {
-      _isSendingOtp = true;
-      _secondsRemaining = 120;
-      _sentOtp = (100000 + (DateTime.now().millisecondsSinceEpoch % 900000)).toString(); // giả lập OTP
-      _isOtpValid = false;
+      _errorMessage = 'Please enter a valid email before requesting OTP.';
     });
-    // TODO: Gửi OTP thực tế qua API ở đây, ví dụ: await sendOtpToEmail(_emailController.text, _sentOtp);
+    return;
+  }
+
+  setState(() {
+    _isSendingOtp = true;
+    _errorMessage = null;
+  });
+
+  final authController = Get.find<AuthController>();
+  final result = await authController.sendOtpApi(_emailController.text);
+
+  if (result['success']) {
+    setState(() {
+      _secondsRemaining = 120;
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('OTP sent to ${_emailController.text} (demo: $_sentOtp)')),
+      SnackBar(content: Text(result['message'])),
     );
 
     _timer?.cancel();
@@ -75,12 +82,70 @@ class _SignupScreenState extends State<SignupScreen> {
         });
       }
     });
+  } else {
+    setState(() {
+      _isSendingOtp = false;
+      _errorMessage = result['message'];
+    });
+  }
+}
+
+  void _validateOtp(String value) async {
+    if (value.isEmpty) {
+      setState(() {
+        _isOtpValid = false;
+      });
+      return;
+    }
+
+    final authController = Get.find<AuthController>();
+    final result = await authController.confirmOtpApi(_emailController.text, value);
+
+    setState(() {
+      _isOtpValid = result['success'];
+      if (!result['success']) {
+        _errorMessage = result['message'];
+      } else {
+        _errorMessage = null;
+      }
+    });
   }
 
-  void _validateOtp(String value) {
+  void _signUp() async {
+    if (!_canSignUp()) {
+      setState(() {
+        _errorMessage = 'Please fill all fields and verify OTP';
+      });
+      return;
+    }
+
     setState(() {
-      _isOtpValid = value == _sentOtp;
+      _isSendingOtp = true;
+      _errorMessage = null;
     });
+
+    final authController = Get.find<AuthController>();
+    final result = await authController.signupApi(
+      _usernameController.text,
+      _emailController.text,
+      _passwordController.text,
+      _dobController.text,
+    );
+
+    setState(() {
+      _isSendingOtp = false;
+    });
+
+    if (result['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
+      Get.off(() => const SigninScreen());
+    } else {
+      setState(() {
+        _errorMessage = result['message'];
+      });
+    }
   }
 
   bool _canSignUp() {
@@ -204,8 +269,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: _isSendingOtp ? null : _sendOtp,
-                    child: _isSendingOtp
+                    onPressed: (_isSendingOtp || _secondsRemaining > 0) ? null : _sendOtp,
+                    child: (_secondsRemaining > 0)
                         ? Text('Resend (${_secondsRemaining}s)')
                         : const Text('Send OTP'),
                   ),
@@ -241,20 +306,21 @@ class _SignupScreenState extends State<SignupScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
               const SizedBox(height: 24),
               // Đăng ký button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _canSignUp()
-                      ? () {
-                          // Xử lý đăng ký ở đây
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Sign up successful!')),
-                          );
-                          Get.to(() => const SigninScreen());
-                        }
-                      : null,
+                  onPressed: _canSignUp() ? _signUp : null,
                   child: const Text('Sign Up'),
                 ),
               ),

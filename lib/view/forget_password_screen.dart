@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/auth_controller.dart';
 import 'package:flutter_application_1/utils/app_textstyles.dart';
 import 'package:flutter_application_1/view/signin_screen.dart';
 import 'package:flutter_application_1/view/widgets/custom_textfield.dart';
@@ -16,9 +17,10 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   String? _errorMessage;
-  String? _sentOtp;
   bool _isSendingOtp = false;
   int _secondsRemaining = 0;
   Timer? _timer;
@@ -28,54 +30,129 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   void dispose() {
     _emailController.dispose();
     _otpController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     _timer?.cancel();
     super.dispose();
   }
 
   void _sendOtp() async {
     if (_emailController.text.isEmpty || !GetUtils.isEmail(_emailController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email before requesting OTP.')),
-      );
+      setState(() {
+        _errorMessage = 'Please enter a valid email before requesting OTP.';
+      });
       return;
     }
 
     setState(() {
       _isSendingOtp = true;
-      _secondsRemaining = 120;
-      _sentOtp = (100000 + (DateTime.now().millisecondsSinceEpoch % 900000)).toString();
-      _isOtpValid = false;
+      _errorMessage = null;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('OTP sent to ${_emailController.text} (demo: $_sentOtp)')),
-    );
+    final authController = Get.find<AuthController>();
+    final result = await authController.sendOtpApi(_emailController.text);
 
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_secondsRemaining > 0) {
-        setState(() {
-          _secondsRemaining--;
-        });
+    if (result['success']) {
+      setState(() {
+        _secondsRemaining = 120; // Đồng bộ với backend (2 phút)
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
+
+      _timer?.cancel();
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (_secondsRemaining > 0) {
+          setState(() {
+            _secondsRemaining--;
+          });
+        } else {
+          timer.cancel();
+          setState(() {
+            _isSendingOtp = false;
+          });
+        }
+      });
+    } else {
+      setState(() {
+        _isSendingOtp = false;
+        _errorMessage = result['message'];
+      });
+    }
+  }
+
+  void _validateOtp(String value) async {
+    if (value.isEmpty) {
+      setState(() {
+        _isOtpValid = false;
+      });
+      return;
+    }
+
+    final authController = Get.find<AuthController>();
+    final result = await authController.confirmOtpApi(_emailController.text, value);
+
+    setState(() {
+      _isOtpValid = result['success'];
+      if (!result['success']) {
+        _errorMessage = result['message'];
       } else {
-        timer.cancel();
-        setState(() {
-          _isSendingOtp = false;
-        });
+        _errorMessage = null;
       }
     });
   }
 
-  void _validateOtp(String value) {
+  void _resetPassword() async {
+    if (_newPasswordController.text != _confirmPasswordController.text) {
+      setState(() {
+        _errorMessage = 'Passwords do not match';
+      });
+      return;
+    }
+
+    if (_newPasswordController.text.length < 6) {
+      setState(() {
+        _errorMessage = 'New password must be at least 6 characters';
+      });
+      return;
+    }
+
     setState(() {
-      _isOtpValid = value == _sentOtp;
+      _isSendingOtp = true;
+      _errorMessage = null;
     });
+
+    final authController = Get.find<AuthController>();
+    final result = await authController.resetPasswordApi(
+      _emailController.text,
+      _otpController.text,
+      _newPasswordController.text,
+    );
+
+    setState(() {
+      _isSendingOtp = false;
+    });
+
+    if (result['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'])),
+      );
+      Get.off(() => const SigninScreen());
+    } else {
+      setState(() {
+        _errorMessage = result['message'];
+      });
+    }
   }
 
-  bool _confirmpassword() {
+  bool _canResetPassword() {
     return _emailController.text.isNotEmpty &&
         _otpController.text.isNotEmpty &&
-        _isOtpValid;
+        _newPasswordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty &&
+        _isOtpValid &&
+        _newPasswordController.text == _confirmPasswordController.text;
   }
 
   @override
@@ -151,6 +228,42 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ],
               ),
               const SizedBox(height: 16),
+              if (_isOtpValid) ...[
+                CustomTextfield(
+                  label: 'New Password',
+                  prefixIcon: Icons.lock_outline,
+                  keyboardType: TextInputType.visiblePassword,
+                  controller: _newPasswordController,
+                  isPassWord: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a new password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomTextfield(
+                  label: 'Confirm Password',
+                  prefixIcon: Icons.lock_outline,
+                  keyboardType: TextInputType.visiblePassword,
+                  controller: _confirmPasswordController,
+                  isPassWord: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != _newPasswordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+              const SizedBox(height: 16),
               //Error message
               if (_errorMessage != null)
                   Padding(
@@ -165,10 +278,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _confirmpassword()
-                      ? () => Get.to(() => const SigninScreen())
-                      : null,
-                  child: const Text('Forget your password'),
+                  onPressed: _canResetPassword() ? _resetPassword : null,
+                  child: const Text('Reset Password'),
                 ),
               ),
             ],
