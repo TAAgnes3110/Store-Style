@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/auth_controller.dart';
+import 'package:flutter_application_1/view/main_screen.dart';
+import 'package:flutter_application_1/view/onboarding_screen.dart';
+import 'package:flutter_application_1/view/signin_screen.dart';
+import 'package:get/get.dart';
 
 class SplashScreens extends StatelessWidget {
-  const SplashScreens({super.key});
+  SplashScreens({super.key});
+
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (authController.isFirstTime) {
+        Get.off(() => const OnboardingScreen());
+      } else if (authController.isLoggedIn) {
+        Get.off(() => const MainScreen());
+      } else {
+        Get.off(() => const SigninScreen());
+      }
+    });
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
