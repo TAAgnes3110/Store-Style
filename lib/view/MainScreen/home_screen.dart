@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                             children: [
                                 CircleAvatar(
                                     radius: 20,
-                                    backgroundImage: AssetImage('Frontend/assets/images/avatar.jpg'),
+                                    backgroundImage: AssetImage('assets/images/avatar.jpg'),
                                 ),
 
                                 SizedBox(width: 12),
