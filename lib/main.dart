@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/Navigation_controller.dart';
 import 'package:flutter_application_1/controllers/theme_controller.dart';
 import 'package:flutter_application_1/utils/app_themes.dart';
 import 'package:flutter_application_1/view/splash_screen.dart';
@@ -11,6 +12,7 @@ void main() async {
   await GetStorage.init();
   Get.put(ThemeController());
   Get.put(AuthController());
+  Get.put(NavigationController());
   runApp(const MyApp());
 }
 

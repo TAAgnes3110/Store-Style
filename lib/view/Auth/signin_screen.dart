@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/auth_controller.dart';
 import 'package:flutter_application_1/utils/app_textstyles.dart';
-import 'package:flutter_application_1/view/forget_password_screen.dart';
-import 'package:flutter_application_1/view/main_screen.dart';
-import 'package:flutter_application_1/view/signup_screen.dart';
+import 'package:flutter_application_1/view/Auth/forget_password_screen.dart';
+import 'package:flutter_application_1/view/MainScreen/main_screen.dart';
+import 'package:flutter_application_1/view/Auth/signup_screen.dart';
 import 'package:flutter_application_1/view/widgets/custom_textfield.dart';
 import 'package:get/get.dart';
 
@@ -180,7 +180,7 @@ class _SigninScreenState extends State<SigninScreen> {
       );
 
       if (result['success'] == true) {
-        authController.login(); // Cập nhật trạng thái đăng nhập
+        authController.login();
         Get.off(() => const MainScreen());
       } else {
         setState(() {

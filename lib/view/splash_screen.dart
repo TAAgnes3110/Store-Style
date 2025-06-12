@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/auth_controller.dart';
-import 'package:flutter_application_1/view/main_screen.dart';
+import 'package:flutter_application_1/view/MainScreen/main_screen.dart';
 import 'package:flutter_application_1/view/onboarding_screen.dart';
-import 'package:flutter_application_1/view/signin_screen.dart';
+import 'package:flutter_application_1/view/Auth/signin_screen.dart';
 import 'package:get/get.dart';
 
 class SplashScreens extends StatelessWidget {

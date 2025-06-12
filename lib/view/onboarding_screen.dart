@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/signin_screen.dart';
+import 'package:flutter_application_1/view/Auth/signin_screen.dart';
 import 'package:get/get.dart';
 
 class OnboardingScreen extends StatefulWidget {

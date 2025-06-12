@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/auth_controller.dart';
 import 'package:flutter_application_1/utils/app_textstyles.dart';
-import 'package:flutter_application_1/view/signin_screen.dart';
+import 'package:flutter_application_1/view/Auth/signin_screen.dart';
 import 'package:flutter_application_1/view/widgets/custom_textfield.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
