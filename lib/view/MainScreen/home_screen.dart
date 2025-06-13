@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application_1/controllers/theme_controller.dart';
+import 'package:flutter_application_1/view/MainScreen/all_products_screen.dart';
 import 'package:flutter_application_1/view/widgets/category_chips.dart';
 import 'package:flutter_application_1/view/widgets/custom_search_bar.dart';
 import 'package:flutter_application_1/view/widgets/product_grid.dart';
@@ -101,10 +102,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              // Navigate to the products page
-                              Get.toNamed('/products');
-                            },
+                            onTap: () => Get.to(() => const AllProductsScreen()),
                             child: Text(
                               'See All',
                               style: TextStyle(
